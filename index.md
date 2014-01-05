@@ -22,11 +22,11 @@ Path and filename of PID file. It is recommended to locate the knxdmxd.pid in /v
 
 ## -d
 
-Run as daemon
+Run as daemon.
 
 # Configuration
 
-the configuration file conforms to JSON-standard. Malformed configuration files may cause the knxdmxd to crash. Strings have to encapuslated with quotation marks.
+the configuration file conforms to JSON-standard. Malformed configuration files may cause knxdmxd to crash. Strings have to be encapuslated with quotation marks.
 
 ## channels
 
@@ -70,12 +70,31 @@ Must contain a valid channel name defined in the channels section.
 
 ### &quot;ga&quot; : &lt;string&gt;
 
-Group address that this dimmer should respond to. The Cahnnel will be set to value (DPT5) send to this address.
+Group address that this dimmer should respond to. The channel will be set to value (DPT5) send to this address.
 
 ### &quot;fading&quot; : &lt;float&gt;
 
 Time in seconds that is used to fade between to values. A value of 0.0 disables fading (instant change).
 
+## scenes
 
+Scenes change multiple channel values to predefined values. Example:
+
+    "scenes": [ 
+      { "name" : "Bad_an",
+        "trigger" : {
+          "go" : {"knx" : "1/0/130", "value" : 1 }
+        },
+        "data" : [
+          { "channel" : "bad_r", "value" : 255 },
+          { "channel" : "bad_g", "value" : 255 },
+          { "channel" : "bad_b", "value" : 255 }
+        ],
+        "fading" : {  
+          "in" : 1.0,
+          "out": 1.0,
+        }
+      }
+    ]
 
 
