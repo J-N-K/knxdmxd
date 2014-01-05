@@ -4,6 +4,8 @@ layout: default
 
 # What is knxdmxd
 
+knxdmxd is a daemon that connects building automation using KNX (via EIBD) to DMX lighting equipment using E1.31.
+
 # Command line options
 
 ## -u &lt;address&gt;
@@ -28,7 +30,11 @@ the configuration file conforms to JSON-standard. Malformed configuration files 
 
 ## channels
 
-Channels are the basic building block of the configuration. They consist of at least have a name and DMX-address.
+Channels are the basic building block of the configuration. They consist of at least have a name and DMX-address. Example:
+
+    "channels" : [
+      { "name" : "test", "dmx" : "2.450", "statusga" : "14/1/3" }
+    ]
 
 ### &quot;name&quot; : &lt;string&gt;
 
@@ -36,14 +42,40 @@ Channel names are not restricted in length or composition. They must be unique w
 
 ### &quot;dmx&quot; : &lt;string&gt;
 
-The DMX address has the notation &lt;universe&gt;.&lt;channel&gt;. According to standrad numbering, channel 0 and universe 0 do not exists. If the universe part is ommitted, universe 1 is assumed.
+The DMX address has the notation &lt;universe&gt;.&lt;channel&gt;. According to E1.31 standard numbering, channel 0 and universe 0 do not exists. If the universe part is ommitted, universe 1 is assumed.
 
 ### &quot;statusga&quot; : &lt;string&gt;
 
-If defined, a telegram with the current channel value will be send via EIBD to the specified address whenever a crossfade finishes.
+If defined, a telegram (DPT5) with the current channel value will be send via EIBD to the specified address whenever a crossfade finishes.
 
-### &quot;factor&quot; : &lt;float&lt;
+### &quot;factor&quot; : &lt;float&gt;
 
 Defaults to 1.0. All values set within knxdmxd for this channel are multiplied with this value. Can be used to adjust colors in RGB setups or for brightness corrections in multi-unit setups.
+
+## dimmers
+
+Dimmers allow changing the value of single channels. Example:
+
+    "dimmers": [  
+      { "name" : "test", "channel" : "test", "ga" : "14/0/3", "fading" : 0 }
+    ]
+
+### &quot;name&quot; : &lt;string&gt;
+
+Dimmer names are not restricted in length or composition. They must be unique within the configuration. It is recommended not to use umlauts.
+
+### &quot;channel&quot; : &lt;string&gt;
+
+Must contain a valid channel name defined in the channels section.
+
+### &quot;ga&quot; : &lt;string&gt;
+
+Group address that this dimmer should respond to. The Cahnnel will be set to value (DPT5) send to this address.
+
+### &quot;fading&quot; : &lt;float&gt;
+
+Time in seconds that is used to fade between to values. A value of 0.0 disables fading (instant change).
+
+
 
 
