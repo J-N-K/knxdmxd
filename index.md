@@ -98,3 +98,37 @@ Scenes change multiple channel values to predefined values. Example:
     ]
 
 
+### &quot;name&quot; : &lt;string&gt;
+
+Scene names are not restricted in length or composition. They must be unique within the configuration. It is recommended not to use umlauts.
+
+### &quot;trigger&quot; : &lt;object&gt;
+
+(see trigger section below)
+
+### &quot;data&quot; : &lt;array&gt;
+
+The data section contains an array of objects, each describing one channel. Each channel object consists of two values, the name of the channel (as defined in the channels section above) and a corresponding value for this scene. 
+
+### &quot;fading&quot; : &lt;object&gt;
+
+The fading object is optional. If no fading is defined, A value of 0.0 is assumed. Possible childs of the fading object are
+
+#### &quot;in&quot; : &lt;float&gt;
+
+Time in seconds that is used, if the previous value of the channel is below the value defined for this scene.
+
+#### &quot;out&quot; : &lt;float&gt;
+
+Time in seconds that is used, if the previous value of the channel is above the value defined for this scene.
+
+#### &quot;time&quot; : &lt;float&gt;
+
+Time in seconds that is used for all value changes. This setting has priority over &quot;in&quot; and &quot;out&quot;.
+
+
+
+
+
+
+
