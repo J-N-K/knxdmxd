@@ -33,7 +33,7 @@ the configuration file conforms to JSON-standard. Malformed configuration files 
 Channels are the basic building block of the configuration. They consist of at least have a name and DMX-address. Example:
 
     "channels" : [
-      { "name" : "test", "dmx" : "2.450", "statusga" : "14/1/3" }
+      { "name" : "test", "dmx" : "2.450", "statusga" : {"switch" : "14/6/3", "value" : "14/7/3" }
     ]
 
 ### &quot;name&quot; : &lt;string&gt;
@@ -44,9 +44,17 @@ Channel names are not restricted in length or composition. They must be unique w
 
 The DMX address has the notation &lt;universe&gt;.&lt;channel&gt;. According to E1.31 standard numbering, channel 0 and universe 0 do not exists. If the universe part is ommitted, universe 1 is assumed.
 
-### &quot;statusga&quot; : &lt;string&gt;
+### &quot;statusga&quot; : &lt;object&gt;
 
-If defined, a telegram (DPT5) with the current channel value will be send via EIBD to the specified address whenever a crossfade finishes.
+This object is optional. It can consist of two members &quot;switchquot; and &quot;value&quot;. The old-style status-object (a single string for the value-address) is still supported but deprecated and my be removed in future versions. 
+
+#### &quot;switch&quot; : &lt;string&gt;
+
+If defined, a telegram (DPT1) will be send via EIBD to the specified address whenever a crossfade finishes. The value is 0/false/off if the channel value is 0 and 1/true/on if the channel value is above 0.
+
+#### &quot;value&quot; : &lt;string&gt;
+
+If defined, a telegram (DPT5) will be send via EIBD to the specified address whenever a crossfade finishes. The value is the current value of the channel.
 
 ### &quot;factor&quot; : &lt;float&gt;
 
