@@ -65,7 +65,7 @@ Defaults to 1.0. All values set within knxdmxd for this channel are multiplied w
 Dimmers allow changing the value of single channels. Example:
 
     "dimmers": [  
-      { "name" : "test", "channel" : "test", "ga" : "14/0/3", "fading" : 0 }
+      { "name" : "test", "channel" : "test", "ga" : { "switch: "14/0/1", "value": "14/1/1" }, "turnonvalue" : 255, "fading" : 0 }
     ]
 
 ### &quot;name&quot; : &lt;string&gt;
@@ -76,9 +76,21 @@ Dimmer names are not restricted in length or composition. They must be unique wi
 
 Must contain a valid channel name defined in the channels section.
 
-### &quot;ga&quot; : &lt;string&gt;
+### &quot;ga&quot; : &lt;object&gt;
 
-Group address that this dimmer should respond to. The channel will be set to value (DPT5) send to this address.
+Group address(es) that this dimmer should respond to. This object can consist of two objects: &quot;switch&quot; and &quot;value&quot; The old-style format (string instead of object for value-only-address) is deprecated and may be removed in future versions. The object
+
+#### &quot;switch&quot; : &lt;string&gt;
+
+Group address that switches this dimmer on (1) or off (0). The telegram has to be DPT1. If a &quot;turnonvalue&quot;-value is defined, the dimmer ist set to that value, if the configured value is 0 or missing, the last value before turn-off is used.
+
+#### &quot;value&quot; : &lt;string&gt;
+
+Group address that changes the value of this dimmer. The telegram has to be DPT5.
+
+### &quot;turnonvalue&quot; : &lt;integer&gt;
+
+This value is optional and used as the value that the dimmer ist set to, when it is switched on by the &quot;switch&quot;-address. If the value is missing or set to 0, the last-value before turn-off is used.
 
 ### &quot;fading&quot; : &lt;float&gt;
 
