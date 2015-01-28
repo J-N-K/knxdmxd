@@ -23,16 +23,10 @@ set(LIBS
   ${uuid_LIBRARY}
 )
 
-add_library(config config.c)
-
 # target
 add_executable(knxdmxd knxdmxd.c)
-add_executable(test_config test_config.c)
 
 target_link_libraries(knxdmxd ${LIBS} config)
-target_link_libraries(test_config ${LIBS} config)
-
-#SET_TARGET_PROPERTIES(knxdmxd-i386-wheezy PROPERTIES COMPILE_FLAGS "-g -O2 -Wall")
 
 ## Compiler flags
 if(CMAKE_COMPILER_IS_GNUCXX)
