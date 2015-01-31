@@ -36,6 +36,7 @@
 
 #include <eibclient.h>
 #include <e131.h>
+#include <helper.h>
 #include <knxdmxd.h>
 
 #define USAGESTRING "\n"\
@@ -146,29 +147,6 @@ char *e131_sender = NULL;
 knx_message_queue_t *knx_out_head = NULL, *knx_out_tail = NULL;
 size_t knx_out_size = 0;
 
-bool strdcopy(char **dst, const char *src) {
-  int len = strlen(src) + 1;
-// syslog(LOG_DEBUG, "strdcopy: allocating %d bytes for %s", len, src);
-  *dst = (char*) malloc(len);
-  if (*dst == NULL) {
-    return false;
-  } else {
-    strncpy(*dst, src, len);
-    return true;
-  }
-}
-
-/*
- * str2dmx - convert string to DMX address
- */
-
-void str2dmx(dmxaddr_t *dmx, const char *dmxstr) {
-  sscanf(dmxstr, "%u.%d", &dmx->universe, &dmx->channel);
-  if (dmx->channel == -1) {
-    dmx->channel = dmx->universe;
-    dmx->universe = 1;
-  }
-}
 
 /*
  * knx_queue_append_message
@@ -215,21 +193,6 @@ void knx_queue_remove_message(knx_message_queue_t **head,
 
 }
 
-/*
- * str2eib - convert string to KNX address
- */
-
-eibaddr_t str2knx(const char *gastr) {
-  unsigned int a, b, c;
-  if (sscanf(gastr, "%u/%u/%u", &a, &b, &c) == 3)
-    return ((a & 0x01f) << 11) | ((b & 0x07) << 8) | ((c & 0xff));
-  if (sscanf(gastr, "%u/%u", &a, &b) == 2)
-    return ((a & 0x01f) << 11) | ((b & 0x7FF));
-  if (sscanf(gastr, "%x", &a) == 1)
-    return a & 0xffff;
-  syslog(LOG_WARNING, "str2: invalid group address %s", gastr);
-  return 0;
-}
 
 /*
  * E131address - calculate Multicast IP for E1.31

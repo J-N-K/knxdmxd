@@ -7,6 +7,9 @@
 
 #include <e131.h>
 #include <eibclient.h>
+#include <syslog.h>
+#include <stdbool.h>
+#include <stdio.h>
 
 /*
  * type definitions

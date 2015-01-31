@@ -23,10 +23,12 @@ set(LIBS
   ${uuid_LIBRARY}
 )
 
+add_library(helper helper.c)
+
 # target
 add_executable(knxdmxd knxdmxd.c)
 
-target_link_libraries(knxdmxd ${LIBS} config)
+target_link_libraries(knxdmxd ${LIBS} helper)
 
 ## Compiler flags
 if(CMAKE_COMPILER_IS_GNUCXX)
