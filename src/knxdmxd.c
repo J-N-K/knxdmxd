@@ -69,11 +69,6 @@
 
 #define NOT_FOUND SIZE_MAX
 
-/*#define true 1
-#define false 0
-typedef u_int8_t bool;
-*/
-
 const u_int8_t E131_packet_identifier[] = { 0x41, 0x53, 0x43, 0x2d, 0x45, 0x31,
     0x2e, 0x31, 0x37, 0x00, 0x00, 0x00 };
 
@@ -112,9 +107,6 @@ void init_E131_packet(E131_packet_t *pkt, u_int16_t universe) {
 void init_E131() {
   uuid_generate(E131_sender_UUID);
 }
-
-
-
 
 /*
  * variables for dmx
