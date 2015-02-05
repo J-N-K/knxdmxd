@@ -26,7 +26,7 @@ set(LIBS
 # target
 add_executable(knxdmxd knxdmxd.c)
 
-target_link_libraries(knxdmxd ${LIBS} config)
+target_link_libraries(knxdmxd ${LIBS})
 
 ## Compiler flags
 if(CMAKE_COMPILER_IS_GNUCXX)
