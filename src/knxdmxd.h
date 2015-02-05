@@ -68,7 +68,7 @@ typedef struct {
   unsigned long start; // time when cue should be sent to output
   cue_channel_t *data;
   size_t data_len;
- size_t cue_link;
+  size_t cue_link;
 } cue_t;
 
 typedef struct {
@@ -86,6 +86,7 @@ typedef struct {
   unsigned long start[513], stop[513];
   float factor[513];
   eibaddr_t statusvalue[513], statusswitch[513];
+  unsigned long statusvalue_ts[513], statusswitch_ts[513];
   E131_packet_t packet;
 } universe_t;
   

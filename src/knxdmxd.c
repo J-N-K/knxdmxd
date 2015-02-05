@@ -50,6 +50,7 @@
 #define POLLING_INTERVAL 10
 #define MAX_UNIVERSES 16
 #define DMX_INTERVAL 25 // in ms
+#define KNX_STATUS_INTERVAL 1000 // in ms (max. 1 update/s per channel)
 
 #define TARGET_DIMMER 1
 #define TARGET_SCENE 2
@@ -482,7 +483,12 @@ void call_cue(cue_t *cue) {
 }
 
 void send_channel_status(u_int16_t u, u_int16_t c) {
-  if (universes[u].statusvalue[c]) {
+  struct timeb t;
+  ftime(&t);
+  unsigned long currenttime = t.time * 1000 + t.millitm;
+  
+  if (universes[u].statusvalue[c] 
+      && ((currenttime-universes[u].statusvalue_ts[c])>KNX_STATUS_INTERVAL)) {
     syslog(LOG_DEBUG, "send_channel_status: sending status to ga %u",
         universes[u].statusvalue[c]);
     knx_message_t *msg;
@@ -495,11 +501,12 @@ void send_channel_status(u_int16_t u, u_int16_t c) {
     msg->dpt = 5;
     msg->value = (unsigned char) (universes[u].new[c]
         / universes[u].factor[c] + 0.5);
-
+    universes[u].statusvalue_ts[c] = currenttime;
     knx_queue_append_message(&knx_out_head, &knx_out_tail, &knx_out_size,
         msg);
   }
-  if (universes[u].statusswitch[c]) {
+  if (universes[u].statusswitch[c]
+    && ((currenttime-universes[u].statusswitch_ts[c])>KNX_STATUS_INTERVAL)) {
     syslog(LOG_DEBUG, "send_channel_status: sending on/off to ga %u",
         universes[u].statusswitch[c]);
     knx_message_t *msg;
@@ -511,7 +518,7 @@ void send_channel_status(u_int16_t u, u_int16_t c) {
     msg->ga = universes[u].statusswitch[c];
     msg->dpt = 1;
     msg->value = (unsigned char) (universes[u].new[c] > 0);
-
+    universes[u].statusswitch_ts[c] = currenttime;
     knx_queue_append_message(&knx_out_head, &knx_out_tail, &knx_out_size,
         msg);
   }
@@ -1260,6 +1267,8 @@ void load_config() {
     bzero((unsigned long *) &universes[i + 1].stop, 513);
     bzero((eibaddr_t *) &universes[i + 1].statusvalue, 513);
     bzero((eibaddr_t *) &universes[i + 1].statusswitch, 513);
+    bzero((unsigned long *) &universes[i + 1].statusswitch_ts, 513);
+    bzero((unsigned long *) &universes[i + 1].statusvalue_ts, 513);
     if (pthread_mutex_init(&universe_lock[i + 1], NULL) != 0) {
       syslog(LOG_ERR,
           "load_config: could not initalize mutex lock for universe %d",
