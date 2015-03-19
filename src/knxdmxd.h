@@ -1,12 +1,37 @@
 #ifndef __KNXDMXD_H__
 #define __KNXDMXD_H__
 
-#define BUILD "31"
 #define DAEMON_NAME "knxdmxd"
 #define DAEMON_VERSION "1.0.2"
 
 #include <e131.h>
 #include <eibclient.h>
+#include <syslog.h>
+#include <stdbool.h>
+#include <stdio.h>
+
+/*
+ * TARGET_ constants
+ */
+
+#define TARGET_DIMMER 1
+#define TARGET_SCENE 2
+#define TARGET_CUE 3
+#define TARGET_CUELIST 4
+
+/*
+ * TRIGGER_ constants
+ */
+
+#define TRIGGER_GO 1
+#define TRIGGER_HALT 2
+#define TRIGGER_RELEASE 3
+#define TRIGGER_DIRECT 4
+#define TRIGGER_VALUE 5
+#define TRIGGER_FADING 6
+#define TRIGGER_DIM 7
+#define TRIGGER_SWITCH 8
+#define TRIGGER_STEPDIM 9
 
 /*
  * type definitions

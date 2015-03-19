@@ -36,6 +36,7 @@
 
 #include <eibclient.h>
 #include <e131.h>
+#include <helper.h>
 #include <knxdmxd.h>
 
 #define USAGESTRING "\n"\
@@ -43,6 +44,7 @@
   "\t-p <pidfile>     PID-filename\n"\
   "\t-u <eib url>     URL to contact eibd like local:/tmp/eib or ip:192.168.0.101\n"\
   "\t-c <config-file> Config-File\n"
+
 #define NUM_THREADS 5
 
 #define RETRY_TIME 5
@@ -51,27 +53,7 @@
 #define MAX_UNIVERSES 16
 #define DMX_INTERVAL 25 // in ms
 
-#define TARGET_DIMMER 1
-#define TARGET_SCENE 2
-#define TARGET_CUE 3
-#define TARGET_CUELIST 4
-
-#define TRIGGER_GO 1
-#define TRIGGER_HALT 2
-#define TRIGGER_RELEASE 3
-#define TRIGGER_DIRECT 4
-#define TRIGGER_VALUE 5
-#define TRIGGER_FADING 6
-#define TRIGGER_DIM 7
-#define TRIGGER_SWITCH 8
-#define TRIGGER_STEPDIM 9
-
 #define NOT_FOUND SIZE_MAX
-
-/*#define true 1
-#define false 0
-typedef u_int8_t bool;
-*/
 
 const u_int8_t E131_packet_identifier[] = { 0x41, 0x53, 0x43, 0x2d, 0x45, 0x31,
     0x2e, 0x31, 0x37, 0x00, 0x00, 0x00 };
@@ -112,9 +94,6 @@ void init_E131() {
   uuid_generate(E131_sender_UUID);
 }
 
-
-
-
 /*
  * variables for dmx
  */
@@ -145,30 +124,6 @@ char *e131_sender = NULL;
 
 knx_message_queue_t *knx_out_head = NULL, *knx_out_tail = NULL;
 size_t knx_out_size = 0;
-
-bool strdcopy(char **dst, const char *src) {
-  int len = strlen(src) + 1;
-// syslog(LOG_DEBUG, "strdcopy: allocating %d bytes for %s", len, src);
-  *dst = (char*) malloc(len);
-  if (*dst == NULL) {
-    return false;
-  } else {
-    strncpy(*dst, src, len);
-    return true;
-  }
-}
-
-/*
- * str2dmx - convert string to DMX address
- */
-
-void str2dmx(dmxaddr_t *dmx, const char *dmxstr) {
-  sscanf(dmxstr, "%u.%d", &dmx->universe, &dmx->channel);
-  if (dmx->channel == -1) {
-    dmx->channel = dmx->universe;
-    dmx->universe = 1;
-  }
-}
 
 /*
  * knx_queue_append_message
@@ -215,21 +170,6 @@ void knx_queue_remove_message(knx_message_queue_t **head,
 
 }
 
-/*
- * str2eib - convert string to KNX address
- */
-
-eibaddr_t str2knx(const char *gastr) {
-  unsigned int a, b, c;
-  if (sscanf(gastr, "%u/%u/%u", &a, &b, &c) == 3)
-    return ((a & 0x01f) << 11) | ((b & 0x07) << 8) | ((c & 0xff));
-  if (sscanf(gastr, "%u/%u", &a, &b) == 2)
-    return ((a & 0x01f) << 11) | ((b & 0x7FF));
-  if (sscanf(gastr, "%x", &a) == 1)
-    return a & 0xffff;
-  syslog(LOG_WARNING, "str2: invalid group address %s", gastr);
-  return 0;
-}
 
 /*
  * E131address - calculate Multicast IP for E1.31
@@ -252,16 +192,6 @@ void daemonShutdown() {
   exit(EXIT_SUCCESS);
 }
 
-int msleep(unsigned long msec) {
-  struct timespec req = { 0 };
-  time_t sec = (int) (msec / 1000);
-  msec = msec - (sec * 1000);
-  req.tv_sec = sec;
-  req.tv_nsec = msec * 1000000L;
-  while (nanosleep(&req, &req) == -1)
-    continue;
-  return 1;
-}
 
 void signal_handler(int sig) {
   switch (sig) {
@@ -1669,7 +1599,7 @@ int main(int argc, char **argv) {
     setlogmask(LOG_UPTO(LOG_INFO));
     openlog(DAEMON_NAME, LOG_CONS, LOG_USER);
   }
-  syslog(LOG_DEBUG, "main: %s %s (build %s), compiled on %s %s with GCC %s",
+  syslog(LOG_DEBUG, "main: %s %s, compiled on %s %s with GCC %s",
   DAEMON_NAME,
   DAEMON_VERSION, BUILD, __DATE__, __TIME__, __VERSION__);
 
