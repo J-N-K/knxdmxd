@@ -44,6 +44,7 @@
   "\t-p <pidfile>     PID-filename\n"\
   "\t-u <eib url>     URL to contact eibd like local:/tmp/eib or ip:192.168.0.101\n"\
   "\t-c <config-file> Config-File\n"
+
 #define NUM_THREADS 5
 
 #define RETRY_TIME 5
@@ -51,21 +52,6 @@
 #define POLLING_INTERVAL 10
 #define MAX_UNIVERSES 16
 #define DMX_INTERVAL 25 // in ms
-
-#define TARGET_DIMMER 1
-#define TARGET_SCENE 2
-#define TARGET_CUE 3
-#define TARGET_CUELIST 4
-
-#define TRIGGER_GO 1
-#define TRIGGER_HALT 2
-#define TRIGGER_RELEASE 3
-#define TRIGGER_DIRECT 4
-#define TRIGGER_VALUE 5
-#define TRIGGER_FADING 6
-#define TRIGGER_DIM 7
-#define TRIGGER_SWITCH 8
-#define TRIGGER_STEPDIM 9
 
 #define NOT_FOUND SIZE_MAX
 
@@ -139,7 +125,6 @@ char *e131_sender = NULL;
 knx_message_queue_t *knx_out_head = NULL, *knx_out_tail = NULL;
 size_t knx_out_size = 0;
 
-
 /*
  * knx_queue_append_message
  */
@@ -207,16 +192,6 @@ void daemonShutdown() {
   exit(EXIT_SUCCESS);
 }
 
-int msleep(unsigned long msec) {
-  struct timespec req = { 0 };
-  time_t sec = (int) (msec / 1000);
-  msec = msec - (sec * 1000);
-  req.tv_sec = sec;
-  req.tv_nsec = msec * 1000000L;
-  while (nanosleep(&req, &req) == -1)
-    continue;
-  return 1;
-}
 
 void signal_handler(int sig) {
   switch (sig) {
@@ -1624,7 +1599,7 @@ int main(int argc, char **argv) {
     setlogmask(LOG_UPTO(LOG_INFO));
     openlog(DAEMON_NAME, LOG_CONS, LOG_USER);
   }
-  syslog(LOG_DEBUG, "main: %s %s (build %s), compiled on %s %s with GCC %s",
+  syslog(LOG_DEBUG, "main: %s %s, compiled on %s %s with GCC %s",
   DAEMON_NAME,
   DAEMON_VERSION, BUILD, __DATE__, __TIME__, __VERSION__);
 

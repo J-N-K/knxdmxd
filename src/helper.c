@@ -52,3 +52,18 @@ void str2dmx(dmxaddr_t *dmx, const char *dmxstr) {
     dmx->universe = 1;
   }
 }
+
+/*
+ * msleep - sleep msec milliseconds
+ */
+
+int msleep(unsigned long msec) {
+  struct timespec req = { 0 };
+  time_t sec = (int) (msec / 1000);
+  msec = msec - (sec * 1000);
+  req.tv_sec = sec;
+  req.tv_nsec = msec * 1000000L;
+  while (nanosleep(&req, &req) == -1)
+    continue;
+  return 1;
+}
