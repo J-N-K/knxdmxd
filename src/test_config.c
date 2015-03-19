@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <config.h>
 
-void config_parse_channels ( FILE *fp ) {
+void config_parse_channels ( FILE *fp, char* fname ) {
   char *buf=NULL, *linestr, *leftstr, *rightstr;
   bool valid;
   size_t bufsize, len, nl=0;
@@ -37,10 +37,10 @@ void config_parse_channels ( FILE *fp ) {
 }
 
 int main() {
-  char *buf=NULL, *linestr, *leftstr, *rightstr;
-  bool valid;
-  size_t bufsize, len, nl=0;
-  char fname[] = "conf/channels.conf";
+//  char *buf=NULL, *linestr, *leftstr, *rightstr;
+//  bool valid;
+//  size_t bufsize, len, nl=0;
+  char fname[] = "../conf/channels.conf";
 
   setlogmask(LOG_UPTO(LOG_DEBUG));
   openlog(DAEMON_NAME, LOG_CONS | LOG_NDELAY | LOG_PERROR | LOG_PID,
@@ -51,7 +51,7 @@ int main() {
   if (!fp)
     exit(1);
  
-  config_parse_channels(fp);
+  config_parse_channels(fp, fname);
  
   fclose(fp);
 

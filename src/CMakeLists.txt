@@ -26,9 +26,11 @@ set(LIBS
 #add_library(helper helper.c)
 
 # target
-add_executable(knxdmxd knxdmxd.c helper.c)
+add_executable(knxdmxd knxdmxd.c helper.c config.c) 
+add_executable(test_config test_config.c helper.c config.c)
 
 target_link_libraries(knxdmxd ${LIBS})
+target_link_libraries(test_config ${LIBS})
 
 ## Compiler flags
 if(CMAKE_COMPILER_IS_GNUCXX)
