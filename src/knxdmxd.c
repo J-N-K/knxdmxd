@@ -1601,7 +1601,7 @@ int main(int argc, char **argv) {
   }
   syslog(LOG_DEBUG, "main: %s %s, compiled on %s %s with GCC %s",
   DAEMON_NAME,
-  DAEMON_VERSION, BUILD, __DATE__, __TIME__, __VERSION__);
+  DAEMON_VERSION, __DATE__, __TIME__, __VERSION__);
 
   syslog(LOG_INFO, "main: using config-file %s", conf_file);
 
